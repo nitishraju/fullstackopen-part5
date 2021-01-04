@@ -3,29 +3,37 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
-const LoginForm = ({setUser, setNotification}) => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-
-  const submitHandler = async (event) => {
+const LoginForm = ({username, setUsername, password, setPassword, setUser, setNotification}) => {
+  const loginHandler = async (event) => {
     event.preventDefault()
     try {
-      const loggedUser =  await loginService.getUser({ username, password })
+      const loggedUser =  await loginService.login({ username, password })
+
+      window.localStorage.setItem('loggedBlogUser', JSON.stringify(loggedUser))
+      blogService.setToken(loggedUser.token)
+
       setUser(loggedUser)
       setUsername('')
       setPassword('')
 
       setNotification(`Logged In Successfully. Hello ${loggedUser.name}!`)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
     } catch (exception) {
       setUsername('')
       setPassword('')
+
       setNotification('Incorrect Credentials.')
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
     }
 
   }
   return (
     <div>
-      <form onSubmit={submitHandler} >
+      <form onSubmit={loginHandler} >
         <div>
           Username: 
             <input 
@@ -50,6 +58,18 @@ const LoginForm = ({setUser, setNotification}) => {
   )
 }
 
+// const BlogForm = () => {
+//   return (
+//     <div>
+//       <form>
+//         <div>
+
+//         </div>
+//       </form>
+//     </div>
+//   )
+// }
+
 const Notification = ({message}) => {
   if (message === null) {
     return null
@@ -64,19 +84,24 @@ const Notification = ({message}) => {
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState(null)
 
   useEffect(() => {
-    setTimeout(() => {
-      setNotification(null)
-    }, 5000)
-  }, [notification])
+    blogService.getAll().then(blogs =>
+      setBlogs(blogs)
+    )  
+  }, [])
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    const existingUserJSON = window.localStorage.getItem('loggedBlogUser')
+    if (existingUserJSON) {
+      const existingUser = JSON.parse(existingUserJSON)
+      setUser(existingUser)
+      blogService.setToken(existingUser.token)
+    }
   }, [])
 
   if (user === null) {
@@ -84,7 +109,14 @@ const App = () => {
       <div>
         <Notification message={notification} />
         <h1>Log in here:</h1>
-        <LoginForm setUser={setUser} setNotification={setNotification} />
+        <LoginForm
+          username={username}
+          setUsername={setUsername}
+          password={password}
+          setPassword={setPassword}
+          setUser={setUser}
+          setNotification={setNotification}
+        />
       </div>
     ) 
   }
