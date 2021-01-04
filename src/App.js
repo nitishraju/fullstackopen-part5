@@ -16,7 +16,7 @@ const LoginForm = ({username, setUsername, password, setPassword, setUser, setNo
       setUsername('')
       setPassword('')
 
-      setNotification(`Logged In Successfully. Hello ${loggedUser.name}!`)
+      setNotification(`Logged In: Hello ${loggedUser.name}!`)
       setTimeout(() => {
         setNotification(null)
       }, 5000)
@@ -46,7 +46,7 @@ const LoginForm = ({username, setUsername, password, setPassword, setUser, setNo
         <div>
           Password: 
           <input 
-            type="text"
+            type="password"
             value={password}
             name="password"
             onChange={({target}) => setPassword(target.value)}
@@ -58,25 +58,97 @@ const LoginForm = ({username, setUsername, password, setPassword, setUser, setNo
   )
 }
 
-// const BlogForm = () => {
-//   return (
-//     <div>
-//       <form>
-//         <div>
+const BlogForm = ({ setNotification, setBlogs }) => {
+  const [blogTitle, setBlogTitle] = useState('')
+  const [blogAuthor, setBlogAuthor] = useState('')
+  const [blogUrl, setBlogUrl] = useState('')
 
-//         </div>
-//       </form>
-//     </div>
-//   )
-// }
+  const createBlogHandler = async (event) => {
+    event.preventDefault()
+
+    const blogToCreate = {
+      title: blogTitle,
+      author: blogAuthor,
+      url: blogUrl
+    }
+
+    try {
+      await blogService.createBlog(blogToCreate)
+      setNotification(`Created blog: ${blogToCreate.title} by ${blogToCreate.author}`)
+    } catch (exception) {
+      setNotification('Error Creating Blog!')
+    } finally {
+      setBlogTitle('')
+      setBlogAuthor('')
+      setBlogUrl('')
+
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+
+      const blogs = await blogService.getAll()
+      setBlogs(blogs)
+    }
+  }
+
+  return (
+    <div>
+      <form onSubmit={createBlogHandler}>
+        <div>
+          Title: 
+          <input
+            type="text"
+            value={blogTitle}
+            onChange={({target}) => setBlogTitle(target.value)}
+          />
+        </div>
+        <div>
+          Author: 
+          <input
+            type="text"
+            value={blogAuthor}
+            onChange={({target}) => setBlogAuthor(target.value)}
+          />
+        </div>
+        <div>
+          URL: 
+          <input
+            type="text"
+            value={blogUrl}
+            onChange={({target}) => setBlogUrl(target.value)}
+          />
+        </div>
+        <button type="submit">Create</button>
+      </form>
+    </div>
+  )
+}
 
 const Notification = ({message}) => {
   if (message === null) {
     return null
   }
 
+  let msgColor = null
+  if (['Added', 'Deleted', 'Updated', 'Created blog', 'Logged In'].includes(message.split(':')[0])) {
+    msgColor = 'green'
+  }
+  else {
+    msgColor = 'red'
+  }
+  
+  const notifStyle = {
+    color: msgColor,
+    background: 'lightgrey',
+    fontSize: 20,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10
+  }
+
   return (
-    <div>
+    <div style={notifStyle}>
       {message}
     </div>
   )
@@ -87,6 +159,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [newBlog, setNewBlog] = useState(null)
   const [notification, setNotification] = useState(null)
 
   useEffect(() => {
@@ -103,6 +176,11 @@ const App = () => {
       blogService.setToken(existingUser.token)
     }
   }, [])
+
+  const logoutHandler = () => {
+    window.localStorage.removeItem('loggedBlogUser')
+    window.location.reload()
+  }
 
   if (user === null) {
     return (
@@ -122,10 +200,19 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div>   
+      <h2>Blogs</h2>
       <Notification message={notification} />
-      <h2>blogs</h2>
-      <p>{user.name} logged in.</p>
+      {user.name} logged in. 
+      <button type="button" onClick={logoutHandler}>Log Out</button>
+      <h2>Create a New Blog:</h2>
+      <BlogForm 
+        user={user}
+        newBlog={newBlog}
+        setNewBlog={setNewBlog}
+        setNotification={setNotification} 
+        setBlogs = {setBlogs}
+      />
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
