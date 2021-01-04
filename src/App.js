@@ -15,7 +15,7 @@ const LoginForm = ({setUser, setNotification}) => {
       setUsername('')
       setPassword('')
 
-      setNotification(`Logged In Successfully. Hello ${loggedUser.name}`)
+      setNotification(`Logged In Successfully. Hello ${loggedUser.name}!`)
     } catch (exception) {
       setUsername('')
       setPassword('')
@@ -25,7 +25,6 @@ const LoginForm = ({setUser, setNotification}) => {
   }
   return (
     <div>
-      <h1>Log in here!</h1>
       <form onSubmit={submitHandler} >
         <div>
           Username: 
@@ -80,11 +79,21 @@ const App = () => {
     )  
   }, [])
 
+  if (user === null) {
+    return (
+      <div>
+        <Notification message={notification} />
+        <h1>Log in here:</h1>
+        <LoginForm setUser={setUser} setNotification={setNotification} />
+      </div>
+    ) 
+  }
+
   return (
     <div>
       <Notification message={notification} />
-      <LoginForm setUser={setUser} setNotification={setNotification} />
       <h2>blogs</h2>
+      <p>{user.name} logged in.</p>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
