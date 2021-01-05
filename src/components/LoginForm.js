@@ -1,12 +1,23 @@
-import React from 'react'
+import React, { useState, useImperativeHandle } from 'react'
 
-const LoginForm = ({
-  loginHandler,
-  username,
-  setUsername,
-  password,
-  setPassword
-  }) => {
+const LoginForm = React.forwardRef(({loginHandler}, ref) => {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+
+  const getUser = () => {
+    const userToLog = {
+      username,
+      password
+    }
+    return userToLog
+  }
+
+  useImperativeHandle(ref, () => {
+    return ({
+      getUser
+    })
+  })
+
   return (
     <div>
       <form onSubmit={loginHandler} >
@@ -32,6 +43,6 @@ const LoginForm = ({
       </form>
     </div>
   )
-}
+})
 
 export default LoginForm
