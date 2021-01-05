@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 
 import Notification from './components/Notification'
+import Toggleable from './components/Toggleable'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Blog from './components/Blog'
@@ -89,17 +90,20 @@ const App = () => {
     )
   }
 
+  const blogToggle = useRef()
   const blogView = () => {
     return (
       <div>
         <h2>Blogs</h2>
         {user.name} logged in. 
         <button type="button" onClick={logoutHandler}>Log Out</button>
-        <h2>Create a New Blog:</h2>
-        <BlogForm
-          ref={blogFormRef}
-          createBlogHandler={createBlogHandler}
-        />
+        <Toggleable toggleLabel="Create Blog Entry" ref={blogToggle}>
+          <h2>Create a New Blog:</h2>
+          <BlogForm
+            ref={blogFormRef}
+            createBlogHandler={createBlogHandler}
+          />
+        </Toggleable>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
