@@ -1,62 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import LoginForm from './components/LoginForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
-
-const LoginForm = ({username, setUsername, password, setPassword, setUser, setNotification}) => {
-  const loginHandler = async (event) => {
-    event.preventDefault()
-    try {
-      const loggedUser =  await loginService.login({ username, password })
-
-      window.localStorage.setItem('loggedBlogUser', JSON.stringify(loggedUser))
-      blogService.setToken(loggedUser.token)
-
-      setUser(loggedUser)
-      setUsername('')
-      setPassword('')
-
-      setNotification(`Logged In: Hello ${loggedUser.name}!`)
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
-    } catch (exception) {
-      setUsername('')
-      setPassword('')
-
-      setNotification('Incorrect Credentials.')
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
-    }
-
-  }
-  return (
-    <div>
-      <form onSubmit={loginHandler} >
-        <div>
-          Username: 
-            <input 
-              type="text"
-              value={username}
-              name="username"
-              onChange={({target}) => setUsername(target.value)}
-            />
-        </div>
-        <div>
-          Password: 
-          <input 
-            type="password"
-            value={password}
-            name="password"
-            onChange={({target}) => setPassword(target.value)}
-          />
-        </div>
-        <button type="submit">Log In</button>
-      </form>
-    </div>
-  )
-}
 
 const BlogForm = ({ setNotification, setBlogs }) => {
   const [blogTitle, setBlogTitle] = useState('')
@@ -177,45 +123,81 @@ const App = () => {
     }
   }, [])
 
+  const loginHandler = async (event) => {
+    event.preventDefault()
+    try {
+      const loggedUser =  await loginService.login({ username, password })
+
+      window.localStorage.setItem('loggedBlogUser', JSON.stringify(loggedUser))
+      blogService.setToken(loggedUser.token)
+
+      setUser(loggedUser)
+      setUsername('')
+      setPassword('')
+
+      setNotification(`Logged In: Hello ${loggedUser.name}!`)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    } catch (exception) {
+      setUsername('')
+      setPassword('')
+
+      setNotification('Incorrect Credentials.')
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    }
+  }
+
   const logoutHandler = () => {
     window.localStorage.removeItem('loggedBlogUser')
     window.location.reload()
   }
 
-  if (user === null) {
+  const loginView = () => {
     return (
       <div>
-        <Notification message={notification} />
         <h1>Log in here:</h1>
         <LoginForm
+          loginHandler={loginHandler}
           username={username}
           setUsername={setUsername}
           password={password}
           setPassword={setPassword}
-          setUser={setUser}
-          setNotification={setNotification}
         />
       </div>
-    ) 
+    )
+  }
+
+  const blogView = () => {
+    return (
+      <div>
+        <h2>Blogs</h2>
+        {user.name} logged in. 
+        <button type="button" onClick={logoutHandler}>Log Out</button>
+        <h2>Create a New Blog:</h2>
+        <BlogForm 
+          user={user}
+          newBlog={newBlog}
+          setNewBlog={setNewBlog}
+          setNotification={setNotification} 
+          setBlogs = {setBlogs}
+        />
+        {blogs.map(blog =>
+          <Blog key={blog.id} blog={blog} />
+        )}
+      </div>
+    )
   }
 
   return (
-    <div>   
-      <h2>Blogs</h2>
+    <div>
       <Notification message={notification} />
-      {user.name} logged in. 
-      <button type="button" onClick={logoutHandler}>Log Out</button>
-      <h2>Create a New Blog:</h2>
-      <BlogForm 
-        user={user}
-        newBlog={newBlog}
-        setNewBlog={setNewBlog}
-        setNotification={setNotification} 
-        setBlogs = {setBlogs}
-      />
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
+      {user === null
+        ? loginView()
+        : blogView()
+      }
     </div>
   )
 }
