@@ -41,9 +41,28 @@ test('additionally renders blog url and likes when expanded', () => {
     />
   )
 
-  const button = component.getByText('show')
-  fireEvent.click(button)
+  const showButton = component.getByText('show')
+  fireEvent.click(showButton)
 
   expect(component.container).toHaveTextContent(`URL: ${fakeBlog.url}`)
   expect(component.container).toHaveTextContent(`Likes: ${fakeBlog.likes}`)
+})
+
+test('clicking the like button once calls the event handler once', () => {
+  const component = render(
+    <Blog
+      blog={fakeBlog}
+      user={fakeUser}
+      likeHandler={mockLikeHandler}
+      deleteHandler={mockDeleteHandler}
+    />
+  )
+  const showButton = component.getByText('show')
+  fireEvent.click(showButton)
+
+  const likeButton = component.getByText('like')
+  fireEvent.click(likeButton)
+  fireEvent.click(likeButton)
+
+  expect(mockLikeHandler.mock.calls).toHaveLength(2)
 })
