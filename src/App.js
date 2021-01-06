@@ -56,20 +56,21 @@ const App = () => {
     window.location.reload()
   }
 
-  const blogFormRef = useRef()
+  // const blogFormRef = useRef()
   const blogFormToggleRef = useRef()
-  const createBlogHandler = async (event) => {
-    event.preventDefault()
+  const createBlogHandler = async (submittedBlog) => {
+    // event.preventDefault()
     blogFormToggleRef.current.toggleVisibility()
 
-    const blogToCreate = blogFormRef.current.getNewBlog()
+    const blogToCreate = submittedBlog
+    console.log('blog to create', blogToCreate)
     try {
       await blogService.createBlog(blogToCreate)
       setNotification(`Created blog: ${blogToCreate.title} by ${blogToCreate.author}`)
     } catch (exception) {
       setNotification('Error Creating Blog!')
     } finally {
-      blogFormRef.current.resetVals()
+      // blogFormRef.current.resetVals()
 
       setTimeout(() => {
         setNotification(null)
@@ -135,7 +136,6 @@ const App = () => {
         <Toggleable toggleLabel="Create Blog Entry" ref={blogFormToggleRef}>
           <h2>Create a New Blog:</h2>
           <BlogForm
-            ref={blogFormRef}
             createBlogHandler={createBlogHandler}
           />
         </Toggleable>
