@@ -14,6 +14,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "commit": "git add . && git commit -m",
+    "push": "git push origin main",
     "eject": "react-scripts eject",
     "lint": "eslint ."
   },
