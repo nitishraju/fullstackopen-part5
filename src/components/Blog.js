@@ -25,20 +25,20 @@ const Blog = ({ blog, user, likeHandler, deleteHandler }) => {
 
   const hiddenView = () => (
     <>
-    {blog.title} - {blog.author}
-    <button type="button" onClick={toggleExpanded}>{buttonText}</button>
+      {blog.title} - {blog.author}
+      <button type="button" onClick={toggleExpanded}>{buttonText}</button>
     </>
   )
 
   const expandedView = () => (
     <>
-    {blog.title} - {blog.author}
-    <button type="button" onClick={toggleExpanded}>{buttonText}</button><br />
-    URL: {blog.url}<br />
-    Likes: {blog.likes}
-    <button type="buton" onClick={() => likeHandler(blog)}>like</button><br />
-    Created By: {blog.user.name}<br />
-    {showDelete()}
+      {blog.title} - {blog.author}
+      <button type="button" onClick={toggleExpanded}>{buttonText}</button><br />
+      URL: {blog.url}<br />
+      Likes: {blog.likes}
+      <button type="buton" onClick={() => likeHandler(blog)}>like</button><br />
+      Created By: {blog.user.name}<br />
+      {showDelete()}
     </>
   )
 

@@ -32,27 +32,27 @@ const BlogForm = React.forwardRef(({ createBlogHandler }, ref) => {
     <div>
       <form onSubmit={createBlogHandler}>
         <div>
-          Title: 
+          Title:
           <input
             type="text"
             value={blogTitle}
-            onChange={({target}) => setBlogTitle(target.value)}
+            onChange={({ target }) => setBlogTitle(target.value)}
           />
         </div>
         <div>
-          Author: 
+          Author:
           <input
             type="text"
             value={blogAuthor}
-            onChange={({target}) => setBlogAuthor(target.value)}
+            onChange={({ target }) => setBlogAuthor(target.value)}
           />
         </div>
         <div>
-          URL: 
+          URL:
           <input
             type="text"
             value={blogUrl}
-            onChange={({target}) => setBlogUrl(target.value)}
+            onChange={({ target }) => setBlogUrl(target.value)}
           />
         </div>
         <button type="submit">Create</button>
@@ -64,5 +64,7 @@ const BlogForm = React.forwardRef(({ createBlogHandler }, ref) => {
 BlogForm.propTypes = {
   createBlogHandler: PropTypes.func.isRequired
 }
+
+BlogForm.displayName = 'BlogForm'
 
 export default BlogForm

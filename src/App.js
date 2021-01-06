@@ -17,7 +17,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -93,7 +93,7 @@ const App = () => {
   }
 
   const likeHandler = async (blog) => {
-    const incrementedBlog = {...blog, likes: blog.likes + 1}
+    const incrementedBlog = { ...blog, likes: blog.likes + 1 }
     try {
       await blogService.updateBlog(incrementedBlog)
     } catch (exception) {
@@ -130,7 +130,7 @@ const App = () => {
     return (
       <div>
         <h2>Blogs</h2>
-        {user.name} logged in. 
+        {user.name} logged in.
         <button type="button" onClick={logoutHandler}>Log Out</button>
         <Toggleable toggleLabel="Create Blog Entry" ref={blogFormToggleRef}>
           <h2>Create a New Blog:</h2>
@@ -149,7 +149,7 @@ const App = () => {
               likeHandler={likeHandler}
               deleteHandler={deleteHandler}
             />
-        )}
+          )}
       </div>
     )
   }
