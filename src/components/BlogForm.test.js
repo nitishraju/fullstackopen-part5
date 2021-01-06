@@ -41,6 +41,6 @@ test('<BlogForm /> updates state and calls onSubmit function', () => {
 
   expect(mockCreateBlog.mock.calls).toHaveLength(1)
   expect(mockCreateBlog.mock.calls[0][0].title).toBe(fakeBlog.title)
-  expect(mockCreateBlog.mock.calls[0][1]).toBe(fakeBlog.author)
-  expect(mockCreateBlog.mock.calls[0][2]).toBe(fakeBlog.url)
+  expect(mockCreateBlog.mock.calls[0][0].author).toBe(fakeBlog.author)
+  expect(mockCreateBlog.mock.calls[0][0].url).toBe(fakeBlog.url)
 })

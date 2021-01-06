@@ -56,10 +56,8 @@ const App = () => {
     window.location.reload()
   }
 
-  // const blogFormRef = useRef()
   const blogFormToggleRef = useRef()
   const createBlogHandler = async (submittedBlog) => {
-    // event.preventDefault()
     blogFormToggleRef.current.toggleVisibility()
 
     const blogToCreate = submittedBlog
@@ -70,8 +68,6 @@ const App = () => {
     } catch (exception) {
       setNotification('Error Creating Blog!')
     } finally {
-      // blogFormRef.current.resetVals()
-
       setTimeout(() => {
         setNotification(null)
       }, 5000)
