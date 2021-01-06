@@ -57,8 +57,10 @@ const App = () => {
   }
 
   const blogFormRef = useRef()
+  const blogFormToggleRef = useRef()
   const createBlogHandler = async (event) => {
     event.preventDefault()
+    blogFormToggleRef.current.toggleVisibility()
 
     const blogToCreate = blogFormRef.current.getNewBlog()
     try {
@@ -90,14 +92,13 @@ const App = () => {
     )
   }
 
-  const blogToggle = useRef()
   const blogView = () => {
     return (
       <div>
         <h2>Blogs</h2>
         {user.name} logged in. 
         <button type="button" onClick={logoutHandler}>Log Out</button>
-        <Toggleable toggleLabel="Create Blog Entry" ref={blogToggle}>
+        <Toggleable toggleLabel="Create Blog Entry" ref={blogFormToggleRef}>
           <h2>Create a New Blog:</h2>
           <BlogForm
             ref={blogFormRef}
@@ -105,10 +106,23 @@ const App = () => {
           />
         </Toggleable>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} likeHandler={likeHandler} />
         )}
       </div>
     )
+  }
+
+  const likeHandler = async (blog) => {
+    const incrementedBlog = {...blog, likes: blog.likes + 1}
+    try {
+      await blogService.updateBlog(incrementedBlog)
+    } catch (exception) {
+      console.log('Error liking blog!')
+      console.log(exception)
+    } finally {
+      const blogs = await blogService.getAll()
+      setBlogs(blogs)
+    }
   }
 
   return (
