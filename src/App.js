@@ -105,8 +105,10 @@ const App = () => {
             createBlogHandler={createBlogHandler}
           />
         </Toggleable>
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} likeHandler={likeHandler} />
+        {blogs
+          .sort((blog1, blog2) => blog2.likes - blog1.likes)
+          .map(blog =>
+            <Blog key={blog.id} blog={blog} likeHandler={likeHandler} />
         )}
       </div>
     )
