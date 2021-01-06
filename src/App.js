@@ -92,6 +92,40 @@ const App = () => {
     )
   }
 
+  const likeHandler = async (blog) => {
+    const incrementedBlog = {...blog, likes: blog.likes + 1}
+    try {
+      await blogService.updateBlog(incrementedBlog)
+    } catch (exception) {
+      console.log('Error liking blog!')
+      console.log(exception)
+    } finally {
+      const blogs = await blogService.getAll()
+      setBlogs(blogs)
+    }
+  }
+
+  const deleteHandler = async (blog) => {
+    try {
+      const confirmation = window.confirm(`Remove ${blog.title} by ${blog.author}?`)
+      if (confirmation) {
+        await blogService.deleteBlog(blog)
+        setNotification(`You have deleted ${blog.title} by ${blog.author}.`)
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
+
+        const blogs = await blogService.getAll()
+        setBlogs(blogs)
+      }
+    } catch (exception) {
+      setNotification(`Error deleting ${blog.title} by ${blog.author}!`)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    }
+  }
+
   const blogView = () => {
     return (
       <div>
@@ -108,23 +142,16 @@ const App = () => {
         {blogs
           .sort((blog1, blog2) => blog2.likes - blog1.likes)
           .map(blog =>
-            <Blog key={blog.id} blog={blog} likeHandler={likeHandler} />
+            <Blog
+              key={blog.id}
+              blog={blog}
+              user={user}
+              likeHandler={likeHandler}
+              deleteHandler={deleteHandler}
+            />
         )}
       </div>
     )
-  }
-
-  const likeHandler = async (blog) => {
-    const incrementedBlog = {...blog, likes: blog.likes + 1}
-    try {
-      await blogService.updateBlog(incrementedBlog)
-    } catch (exception) {
-      console.log('Error liking blog!')
-      console.log(exception)
-    } finally {
-      const blogs = await blogService.getAll()
-      setBlogs(blogs)
-    }
   }
 
   return (

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-const Blog = ({ blog, likeHandler }) => {
+const Blog = ({ blog, user, likeHandler, deleteHandler }) => {
   const [expanded, setExpanded] = useState(false)
 
   const blogStyle = {
@@ -17,6 +17,10 @@ const Blog = ({ blog, likeHandler }) => {
     setExpanded(!expanded)
   }
 
+  const showDelete = () => user.username === blog.user.username
+    ? <><button type="button" onClick={() => deleteHandler(blog)}>Remove</button></>
+    : null
+
   const hiddenView = () => (
     <>
     {blog.title} - {blog.author}
@@ -31,7 +35,8 @@ const Blog = ({ blog, likeHandler }) => {
     URL: {blog.url}<br />
     Likes: {blog.likes}
     <button type="buton" onClick={() => likeHandler(blog)}>like</button><br />
-    Created By: {blog.user.name}
+    Created By: {blog.user.name}<br />
+    {showDelete()}
     </>
   )
 
