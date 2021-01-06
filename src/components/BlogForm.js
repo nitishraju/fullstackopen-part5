@@ -1,4 +1,5 @@
 import React, { useState, useImperativeHandle } from 'react'
+import PropTypes from 'prop-types'
 
 const BlogForm = React.forwardRef(({ createBlogHandler }, ref) => {
   const [blogTitle, setBlogTitle] = useState('')
@@ -59,5 +60,9 @@ const BlogForm = React.forwardRef(({ createBlogHandler }, ref) => {
     </div>
   )
 })
+
+BlogForm.propTypes = {
+  createBlogHandler: PropTypes.func.isRequired
+}
 
 export default BlogForm
