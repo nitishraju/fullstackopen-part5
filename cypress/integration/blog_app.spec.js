@@ -38,39 +38,60 @@ describe('Blog app', function() {
   })
 
   describe.only('When logged in,', function() {
+    const testingBlog = {
+      title: 'Test Blog',
+      author: 'Testing Author',
+      url: 'http://testing.test/'
+    }
+
     beforeEach(function() {
       cy.login({ username: 'e2eUser', password: 'testing' })
     })
 
     it('a new blog can be added', function() {
       cy.get('#expand-button').click()
-      cy.get('#title').type('Test Blog')
-      cy.get('#author').type('Testing Author')
-      cy.get('#url').type('http://testing.test/')
+      cy.get('#title').type(testingBlog.title)
+      cy.get('#author').type(testingBlog.author)
+      cy.get('#url').type(testingBlog.url)
 
       cy.get('#blog-submit-button').click()
-      cy.get('.notification').contains('Created blog: Test Blog by Testing Author')
-      cy.contains('Test Blog - Testing Author')
+      cy.get('.notification').contains(`Created blog: ${testingBlog.title} by ${testingBlog.author}`)
+      cy.contains(`${testingBlog.title} - ${testingBlog.author}`)
 
       cy.request('GET', 'http://localhost:3001/api/blogs')
         .then(({ body }) => {
-          const blog = body.find(elem => elem.title === 'Test Blog')
-          expect(blog.author).to.eq('Testing Author')
+          const blog = body.find(elem => elem.title === testingBlog.title)
+          expect(blog.author).to.eq(testingBlog.author)
         })
     })
 
     it('a blog can be liked', function() {
-      const fakeBlog = {
-        title: 'Test Blog',
-        author: 'Testing Author',
-        url: 'http://testing.test/'
-      }
-      cy.createBlog(fakeBlog)
+      cy.createBlog(testingBlog)
 
       cy.contains('show').click()
       cy.contains('Likes: 0')
       cy.contains('like').click()
       cy.contains('Likes: 1')
+    })
+
+    it('a blog created by the user can only be deleted by the user', function() {
+      cy.createBlog(testingBlog)
+      cy.contains('show').click()
+      cy.contains('Remove')
+
+      cy.contains('Log Out').click()
+
+      const newUser = {
+        username: 'secondUser',
+        name: 'Second User',
+        password: 'testing2'
+      }
+      cy.request('POST', 'http://localhost:3001/api/users', newUser)
+      cy.login({ username: 'secondUser', password: 'testing2' })
+      cy.visit('/')
+      cy.contains(`${newUser.name} logged in.`)
+      cy.contains('show').click()
+      cy.contains('Remove').should('not.exist')
     })
   })
 })
