@@ -18,7 +18,7 @@
     "push": "git push origin main",
     "eject": "react-scripts eject",
     "lint": "eslint .",
-    "cypress:open": "cypress open"
+    "cy:open": "cypress open"
   },
   "eslintConfig": {
     "extends": "react-app"
