@@ -20,11 +20,11 @@ const Toggleable = React.forwardRef(({ children, toggleLabel }, ref) => {
   return (
     <div>
       <div style={hideIfVisible}>
-        <button onClick={toggleVisibility}>{toggleLabel}</button>
+        <button id="expand-button" onClick={toggleVisibility}>{toggleLabel}</button>
       </div>
       <div style={showIfVisible}>
         {children}
-        <button onClick={toggleVisibility}>Cancel</button>
+        <button id="hide-button" onClick={toggleVisibility}>Cancel</button>
       </div>
     </div>
   )

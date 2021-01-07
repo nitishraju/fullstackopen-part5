@@ -36,4 +36,27 @@ describe('Blog app', function() {
         .and('have.css', 'border-style', 'solid')
     })
   })
+
+  describe.only('When logged in,', function() {
+    beforeEach(function() {
+      cy.login({ username: 'e2eUser', password: 'testing' })
+    })
+
+    it('a new blog can be added', function() {
+      cy.get('#expand-button').click()
+      cy.get('#title').type('Test Blog')
+      cy.get('#author').type('Testing Author')
+      cy.get('#url').type('http://testing.test/')
+
+      cy.get('#blog-submit-button').click()
+      cy.get('.notification').contains('Created blog: Test Blog by Testing Author')
+      cy.contains('Test Blog - Testing Author')
+
+      cy.request('GET', 'http://localhost:3001/api/blogs')
+        .then(({ body }) => {
+          const blog = body.find(elem => elem.title === 'Test Blog')
+          expect(blog.author).to.eq('Testing Author')
+        })
+    })
+  })
 })
