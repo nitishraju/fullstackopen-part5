@@ -58,5 +58,19 @@ describe('Blog app', function() {
           expect(blog.author).to.eq('Testing Author')
         })
     })
+
+    it('a blog can be liked', function() {
+      const fakeBlog = {
+        title: 'Test Blog',
+        author: 'Testing Author',
+        url: 'http://testing.test/'
+      }
+      cy.createBlog(fakeBlog)
+
+      cy.contains('show').click()
+      cy.contains('Likes: 0')
+      cy.contains('like').click()
+      cy.contains('Likes: 1')
+    })
   })
 })
