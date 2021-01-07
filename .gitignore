@@ -25,3 +25,7 @@ yarn-error.log*
 #eslint
 .eslintignore
 .eslintrc.js
+
+#cypress
+cypress/videos
+cypress/screenshots

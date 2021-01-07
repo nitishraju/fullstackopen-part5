@@ -17,7 +17,8 @@
     "commit": "git add . && git commit -m",
     "push": "git push origin main",
     "eject": "react-scripts eject",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "cypress:open": "cypress open"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -38,6 +39,8 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
+    "cypress": "^6.2.1",
+    "eslint-plugin-cypress": "^2.11.2",
     "eslint-plugin-jest": "^24.1.3"
   }
 }
