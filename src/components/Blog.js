@@ -20,7 +20,7 @@ const Blog = ({ blog, user, likeHandler, deleteHandler }) => {
   }
 
   const showDelete = () => user.username === blog.user.username
-    ? <><button type="button" onClick={() => deleteHandler(blog)}>Remove</button></>
+    ? <><button className='delete-button' type="button" onClick={() => deleteHandler(blog)}>Remove</button></>
     : null
 
   const hiddenView = () => (
@@ -36,7 +36,7 @@ const Blog = ({ blog, user, likeHandler, deleteHandler }) => {
       <button type="button" onClick={toggleExpanded}>{buttonText}</button><br />
       URL: {blog.url}<br />
       Likes: {blog.likes}
-      <button type="buton" onClick={() => likeHandler(blog)}>like</button><br />
+      <button className='like-button' type="buton" onClick={() => likeHandler(blog)}>like</button><br />
       Created By: {blog.user.name}<br />
       {showDelete()}
     </>

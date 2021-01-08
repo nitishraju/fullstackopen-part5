@@ -61,7 +61,6 @@ const App = () => {
     blogFormToggleRef.current.toggleVisibility()
 
     const blogToCreate = submittedBlog
-    console.log('blog to create', blogToCreate)
     try {
       await blogService.createBlog(blogToCreate)
       setNotification(`Created blog: ${blogToCreate.title} by ${blogToCreate.author}`)
@@ -90,15 +89,16 @@ const App = () => {
   }
 
   const likeHandler = async (blog) => {
-    const incrementedBlog = { ...blog, likes: blog.likes + 1 }
+    console.log(blog.likes)
+    const incrementedLike = blog.likes + 1
+    console.log(incrementedLike)
+    const incrementedBlog = { ...blog, likes: incrementedLike }
     try {
       await blogService.updateBlog(incrementedBlog)
-    } catch (exception) {
-      console.log('Error liking blog!')
-      console.log(exception)
-    } finally {
       const blogs = await blogService.getAll()
       setBlogs(blogs)
+    } catch (exception) {
+      console.log('Error liking blog!')
     }
   }
 
@@ -135,17 +135,19 @@ const App = () => {
             createBlogHandler={createBlogHandler}
           />
         </Toggleable>
-        {blogs
-          .sort((blog1, blog2) => blog2.likes - blog1.likes)
-          .map(blog =>
-            <Blog
-              key={blog.id}
-              blog={blog}
-              user={user}
-              likeHandler={likeHandler}
-              deleteHandler={deleteHandler}
-            />
-          )}
+        <div id="blog-list">
+          {blogs
+            .sort((blog1, blog2) => blog2.likes - blog1.likes)
+            .map(blog =>
+              <Blog
+                key={blog.id}
+                blog={blog}
+                user={user}
+                likeHandler={likeHandler}
+                deleteHandler={deleteHandler}
+              />
+            )}
+        </div>
       </div>
     )
   }
